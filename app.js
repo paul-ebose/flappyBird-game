@@ -6,7 +6,7 @@ cvs.addEventListener('click', switchState)
 // -- VARIABLES
 let frames = 0
 const sprite = new Image()
-sprite.src = 'sprite.png'
+sprite.src = './images/sprite.png'
 
 // -- LOAD IMAGES
 class SrcImage {
@@ -140,3 +140,4 @@ function loop() {
 
 // -- START
 loop()
+// game should start like 1500ms after tapping play
