@@ -6,15 +6,21 @@ const ctx = cvs.getContext('2d')
 let frames = 0
 
 // -- LOAD IMAGES
-class GameImage {
-  constructor(src, sX, sY, w, h, dX, dY) {
+class SrcImage {
+  constructor(src, w, h, dX, dY) {
     this.src = src
-    this.sX = sX
-    this.sY = sY
     this.w = w
     this.h = h
     this.dX = dX
     this.dY = dY
+  }
+}
+
+class GameImage extends SrcImage {
+  constructor(src, sX, sY, w, h, dX, dY) {
+    super(src,w,h,dX,dY)
+    this.sX = sX
+    this.sY = sY
   }
   draw() {
     ctx.drawImage(this.src, this.sX, this.sY, this.w, this.h, this.dX, this.dY, this.w, this.h)
@@ -25,14 +31,10 @@ class GameImage {
   }
 }
 
-class BirdImage {
+class BirdImage extends SrcImage {
   constructor(src, animation, w, h, dX, dY) {
-    this.src = src
+    super(src, w, h, dX, dY)
     this.animation = animation
-    this.w = w
-    this.h = h
-    this.dX = dX
-    this.dY = dY
     this.frame = 0
   }
   draw() {
