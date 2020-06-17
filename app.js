@@ -92,6 +92,7 @@ function draw() {
   bird.draw()
   bg.drawTwice()
   floor.drawTwice()
+  // draw these only if necessary
   state.current === state.ready ? getReady.draw() : null
   state.current === state.inGame ? bird.flap() : null
   state.current === state.over ? gameOver.draw() : null
