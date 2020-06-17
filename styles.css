@@ -24,6 +24,7 @@ body {
 }
 
 canvas {
+  display: flex;
   margin: auto;
   border: 1px solid #222;
 }
