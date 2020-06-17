@@ -1,9 +1,12 @@
-// -- GRAB CANVAS
+// -- CANVAS
 const cvs = document.getElementById('game')
 const ctx = cvs.getContext('2d')
+cvs.addEventListener('click', switchState)
 
 // -- VARIABLES
 let frames = 0
+const sprite = new Image()
+sprite.src = 'sprite.png'
 
 // -- LOAD IMAGES
 class SrcImage {
@@ -32,28 +35,44 @@ class GameImage extends SrcImage {
 }
 
 class BirdImage extends SrcImage {
-  constructor(src, animation, w, h, dX, dY) {
+  constructor(src, animation, w, h, dX, dY, gravity = 0.25, jump = 4.6) {
     super(src, w, h, dX, dY)
+    this.y = dY
     this.animation = animation
     this.frame = 0
+    this.position = 0
+    this.gravity = gravity
+    this.jump = jump
   }
   draw() {
     let bird = this.animation[this.frame]
     ctx.drawImage(this.src, bird.sX, bird.sY, this.w, this.h, this.dX - this.w/2, this.dY - this.h/2, this.w, this.h)
   }
-  flap() {}
+  flap() {
+    this.position = -this.jump
+  }
   update() {
-    // flap speed
+    // bird speed
     let period = state.current === state.ready ? 10 : 5
     // change bird wing/flap angle on the draw function
     this.frame += frames % period === 0 ? 1 : 0
     // make sure the max frame is 4, then goes back to 0
     this.frame = this.frame % this.animation.length
+    // bird positioning
+    if (state.current === state.ready) {
+      // y is backup, (RESET)
+      this.dY = this.y
+    } else {
+      this.position += this.gravity
+      // gravity pulling down or flap pushing up
+      this.dY += this.position
+      // activate floor / make it solid for the bird
+      if ((this.dY + this.h/2) >= (cvs.height - floor.h)) {
+        this.dY = (cvs.height - floor.h) - this.h/2
+      }
+    }
   }
 }
-
-const sprite = new Image()
-sprite.src = 'sprite.png'
 
 const birdAnimation = [
   {sX: 276, sY: 112},
@@ -103,7 +122,6 @@ function draw() {
   bird.draw()
   // draw these only if necessary
   state.current === state.ready ? getReady.draw() : null
-  state.current === state.inGame ? bird.flap() : null
   state.current === state.over ? gameOver.draw() : null
 }
 
