@@ -41,6 +41,7 @@ class BirdImage extends SrcImage {
     let bird = this.animation[this.frame]
     ctx.drawImage(this.src, bird.sX, bird.sY, this.w, this.h, this.dX - this.w/2, this.dY - this.h/2, this.w, this.h)
   }
+  flap() {}
 }
 
 const sprite = new Image()
@@ -59,17 +60,41 @@ const floor = new GameImage(sprite, 276, 0, 224, 112, 0, cvs.height - 112)
 const getReady = new GameImage(sprite, 0, 228, 173, 152, cvs.width/2 - 173/2, 80)
 const gameOver = new GameImage(sprite, 175, 228, 225, 202, cvs.width/2 - 225/2, 90)
 
+// -- GAME CONTROL
+const state = {
+  current: 0,
+  ready: 0,
+  inGame: 1,
+  over:2,
+}
+
+function switchState() {
+  switch (state.current) {
+    case state.ready:
+      state.current = state.inGame
+      break
+    case state.inGame:
+      bird.flap()
+      break
+    case state.over:
+      state.current = state.ready
+      break
+    default:
+      break
+  }
+}
+
 // -- FUNCTIONS
 // draw
 function draw() {
   ctx.fillStyle = '#70c5ce'
   ctx.fillRect(0, 0, cvs.width, cvs.height)
-
   bird.draw()
   bg.drawTwice()
   floor.drawTwice()
-  getReady.draw()
-  gameOver.draw()
+  state.current === state.ready ? getReady.draw() : null
+  state.current === state.inGame ? bird.flap() : null
+  state.current === state.over ? gameOver.draw() : null
 }
 
 // update
