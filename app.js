@@ -5,6 +5,7 @@ cvs.addEventListener('click', switchState)
 
 // -- VARIABLES
 let frames = 0
+const deg = 45 * (Math.PI/180)
 const sprite = new Image()
 sprite.src = './images/sprite.png'
 
@@ -41,12 +42,20 @@ class BirdImage extends SrcImage {
     this.animation = animation
     this.frame = 0
     this.position = 0
+    this.rotation = 0 * deg
     this.gravity = gravity
     this.jump = jump
   }
   draw() {
     let bird = this.animation[this.frame]
-    ctx.drawImage(this.src, bird.sX, bird.sY, this.w, this.h, this.dX - this.w/2, this.dY - this.h/2, this.w, this.h)
+    ctx.save()
+    // move canvas pointer from (0,0) to bird location
+    ctx.translate(this.dX, this.dY)
+    // rotate the canvas
+    ctx.rotate(this.rotation)
+    // draw image but repositoned it to fix ctx.translate
+    ctx.drawImage(this.src, bird.sX, bird.sY, this.w, this.h, -this.w/2, -this.h/2, this.w, this.h)
+    ctx.restore()
   }
   flap() {
     this.position = -this.jump
@@ -58,10 +67,12 @@ class BirdImage extends SrcImage {
     this.frame += frames % period === 0 ? 1 : 0
     // make sure the max frame is 4, then goes back to 0
     this.frame = this.frame % this.animation.length
+
     // bird positioning
     if (state.current === state.ready) {
       // y is backup, (RESET)
       this.dY = this.y
+      this.rotation = 0
     } else {
       this.position += this.gravity
       // gravity pulling down or flap pushing up
@@ -69,6 +80,13 @@ class BirdImage extends SrcImage {
       // activate floor / make it solid for the bird
       if ((this.dY + this.h/2) >= (cvs.height - floor.h)) {
         this.dY = (cvs.height - floor.h) - this.h/2
+      }
+      // angles of bird when flying
+      if (this.position >= this.jump) {
+        // falling down (true-:still falling, false-:touches the floor)
+        this.dY >= 355 ? this.rotation = 0 : this.rotation = 0.5 * deg
+      } else {
+        this.rotation = 7.7 * deg
       }
     }
   }
