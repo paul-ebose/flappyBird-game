@@ -25,6 +25,7 @@ class GameImage extends SrcImage {
     super(src,w,h,dX,dY)
     this.sX = sX
     this.sY = sY
+    this.floorPosX = 2
   }
   draw() {
     ctx.drawImage(this.src, this.sX, this.sY, this.w, this.h, this.dX, this.dY, this.w, this.h)
@@ -33,12 +34,17 @@ class GameImage extends SrcImage {
     ctx.drawImage(this.src, this.sX, this.sY, this.w, this.h, this.dX, this.dY, this.w, this.h)
     ctx.drawImage(this.src, this.sX, this.sY, this.w, this.h, this.dX + this.w, this.dY, this.w, this.h)
   }
+  update() {
+    if (state.current === state.inGame) {
+      this.dX = (this.dX - this.floorPosX) % (this.w/2)
+    }
+  }
 }
 
 class BirdImage extends SrcImage {
   constructor(src, animation, w, h, dX, dY, gravity = 0.25, jump = 4.6) {
     super(src, w, h, dX, dY)
-    this.y = dY
+    this.birdPosY = dY
     this.animation = animation
     this.frame = 0
     this.position = 0
@@ -71,7 +77,7 @@ class BirdImage extends SrcImage {
     // bird positioning
     if (state.current === state.ready) {
       // y is backup, (RESET)
-      this.dY = this.y
+      this.dY = this.birdPosY
       this.rotation = 0
     } else {
       this.position += this.gravity
@@ -146,6 +152,7 @@ function draw() {
 // update
 function update() {
   bird.update()
+  floor.update()
 }
 
 // loop
