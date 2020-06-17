@@ -54,6 +54,8 @@ const birdAnimation = [
 const bird = new BirdImage(sprite, birdAnimation, 34, 26, 50, 150)
 const bg = new GameImage(sprite, 0, 0, 275, 226, 0, cvs.height - 226)
 const floor = new GameImage(sprite, 276, 0, 224, 112, 0, cvs.height - 112)
+const getReady = new GameImage(sprite, 0, 228, 173, 152, cvs.width/2 - 173/2, 80)
+const gameOver = new GameImage(sprite, 175, 228, 225, 202, cvs.width/2 - 225/2, 90)
 
 // -- FUNCTIONS
 // draw
@@ -61,9 +63,11 @@ function draw() {
   ctx.fillStyle = '#70c5ce'
   ctx.fillRect(0, 0, cvs.width, cvs.height)
 
+  bird.draw()
   bg.drawTwice()
   floor.drawTwice()
-  bird.draw()
+  getReady.draw()
+  gameOver.draw()
 }
 
 // update
