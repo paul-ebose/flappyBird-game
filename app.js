@@ -42,6 +42,14 @@ class BirdImage extends SrcImage {
     ctx.drawImage(this.src, bird.sX, bird.sY, this.w, this.h, this.dX - this.w/2, this.dY - this.h/2, this.w, this.h)
   }
   flap() {}
+  update() {
+    // flap speed
+    let period = state.current === state.ready ? 10 : 5
+    // change bird wing/flap angle on the draw function
+    this.frame += frames % period === 0 ? 1 : 0
+    // make sure the max frame is 4, then goes back to 0
+    this.frame = this.frame % this.animation.length
+  }
 }
 
 const sprite = new Image()
@@ -100,7 +108,7 @@ function draw() {
 
 // update
 function update() {
-
+  bird.update()
 }
 
 // loop
