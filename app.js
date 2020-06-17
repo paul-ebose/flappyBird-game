@@ -97,9 +97,10 @@ function switchState() {
 function draw() {
   ctx.fillStyle = '#70c5ce'
   ctx.fillRect(0, 0, cvs.width, cvs.height)
-  bird.draw()
   bg.drawTwice()
   floor.drawTwice()
+  // bird is drawn last to get higher z-index
+  bird.draw()
   // draw these only if necessary
   state.current === state.ready ? getReady.draw() : null
   state.current === state.inGame ? bird.flap() : null
