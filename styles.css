@@ -20,7 +20,11 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #fbfbfb;
+  background-color: #ededed;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
 }
 
 canvas {
@@ -44,28 +48,45 @@ header a {
   color: orange;
 }
 
-.screenshot {
+main {
+  background-color: #fbfbfb;
+  padding: 1rem 0 3rem 0;
+}
+
+.screenshots {
   display: flex;
-  justify-content: space-around;
-  width: 85%;
+  width: fit-content;
   margin: 1rem auto;
   overflow-x: scroll;
 }
 
-.screenshot::-webkit-scrollbar {
+.container {
+  display: flex;
+  margin: 1rem auto;
+  overflow-x: scroll;
+  width: 90%;
+}
+
+.screenshots::-webkit-scrollbar {
   display: none;
   width: 0.5rem;
 }
 
-.screenshot img{
-  width: 210px;
+.container::-webkit-scrollbar {
+  display: none;
+  width: 0.5rem;
+}
+
+.screenshots img{
+  width: 200px;
   height: 300px;
   object-fit: cover;
+  margin-right: 2rem;
 }
 
 article {
   width: 95%;
-  margin: 0 auto;
+  margin: 1rem auto;
   text-align: justify;
 }
 
@@ -75,11 +96,8 @@ article a {
 }
 
 footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
+  height: 18vh;
   padding: 1rem;
-  background-color: #ededed;
   width: 100%;
 }
 
