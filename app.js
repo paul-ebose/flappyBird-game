@@ -185,7 +185,7 @@ class Bird extends SrcImage {
     this.frame = this.frame % this.animation.length
 
     // bird positioning
-    if (state.current === state.ready) {
+    if (state.current === state.ready || state.current === state.intro) {
       // y is backup, (RESET)
       this.y = this.birdYPos
       this.rotation = 0
@@ -229,8 +229,9 @@ const pipes = new PipePair(sprite, northPipe, southPipe, 53, 400)
 const state = {
   current: 0,
   ready: 0,
-  inGame: 1,
-  over:2,
+  intro: 1,
+  inGame: 2,
+  over: 3,
 }
 const startBtn = {
   x: 120,
@@ -255,11 +256,18 @@ function restartGame(e) {
   }
 }
 
+function gameIntro() {
+  setTimeout(() => {
+    swooshing.play()
+    state.current = state.inGame
+  }, 2000)
+}
+
 function switchState(e) {
   switch (state.current) {
     case state.ready:
-      swooshing.play()
-      state.current = state.inGame
+      state.current = state.intro
+      gameIntro()
       break
     case state.inGame:
       bird.flap()
