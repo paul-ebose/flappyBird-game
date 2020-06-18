@@ -45,6 +45,13 @@ const score = {
   },
 }
 
+// -- LOAD SOUNDS
+const die = new Audio('./audio/sfx_die.wav')
+const flap = new Audio('./audio/sfx_flap.wav')
+const hit = new Audio('./audio/sfx_hit.wav')
+const point = new Audio('./audio/sfx_point.wav')
+const swooshing = new Audio('./audio/sfx_swooshing.wav')
+
 // -- LOAD IMAGES
 class SrcImage {
   constructor(src, w, h, x, y) {
@@ -115,6 +122,7 @@ class PipePair {
       if (p.x + this.w <= 0) {
         this.position.shift()
         score.value++
+        point.play()
         score.best = Math.max(score.value, score.best)
         localStorage.setItem('best', score.best)
       }
@@ -125,11 +133,15 @@ class PipePair {
       const birdWings = bird.x - bird.r
       // north pipe
       if (birdMouth > p.x && birdWings < (p.x + this.w) && birdScalp < (p.y + this.h) && birdChest > p.y ) {
+        hit.play()
         state.current = state.over
+        setTimeout(() => die.play(), 800)
       }
       // south pipe
       if (birdMouth > p.x && birdWings < (p.x + this.w) && birdScalp < (bottomYPos + this.h) && birdChest > bottomYPos ) {
+        hit.play()
         state.current = state.over
+        setTimeout(() => die.play(), 800)
       }
     }
   }
@@ -239,10 +251,12 @@ function restartGame(e) {
 function switchState(e) {
   switch (state.current) {
     case state.ready:
+      swooshing.play()
       state.current = state.inGame
       break
     case state.inGame:
       bird.flap()
+      flap.play()
       break
     case state.over:
       restartGame(e)
