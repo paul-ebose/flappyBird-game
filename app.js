@@ -66,10 +66,17 @@ class PipeImage extends GameImage {
   update() {
     if (state.current !== state.inGame) return
     if ((frames % 100) === 0) {
+      // add new pipe postion which comes from the right
       this.position = this.position.concat({ x: cvs.width, y: this.maxYPos * (Math.random() + 1) })
     }
     for (const i in this.position) {
-      this.position[i].x -= 2
+      const p = this.position[i]
+      // move pipe left
+      p.x -= 2
+      // remove pipe from positions array
+      if (this.position.length >= 4) {
+        this.position.shift()
+      }
     }
   }
 }
