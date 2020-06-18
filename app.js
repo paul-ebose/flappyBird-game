@@ -9,6 +9,23 @@ const deg = 45 * (Math.PI/180)
 const sprite = new Image()
 sprite.src = './images/sprite.png'
 
+const birdAnimation = [
+  {sX: 276, sY: 112},
+  {sX: 276, sY: 139},
+  {sX: 276, sY: 164},
+  {sX: 276, sY: 139},
+]
+const pipes = {
+  top: {
+    sX: 553,
+    sY: 0,
+  },
+  bottom: {
+    sX: 502,
+    sY: 0,
+  },
+}
+
 // -- LOAD IMAGES
 class SrcImage {
   constructor(src, w, h, x, y) {
@@ -41,10 +58,23 @@ class GameImage extends SrcImage {
   }
 }
 
+class PipeImage extends GameImage {
+  constructor(src, sX, sY, w, h, x, y) {
+    super(src,sX,sY,w,h,x,y)
+    this.gap = 90
+    this.maxYPos = -150
+    this.position = []
+  }
+  draw() {
+    ctx.drawImage(this.src, this.sX, this.sY, this.w, this.h, this.x, this.y, this.w, this.h)
+  }
+  update() {}
+}
+
 class BirdImage extends SrcImage {
   constructor(src, animation, w, h, x, y, gravity = 0.25, jump = 4.6) {
     super(src, w, h, x, y)
-    this.birdPosY = y
+    this.birdYPos = y
     this.animation = animation
     this.frame = 0
     this.position = 0
@@ -77,7 +107,7 @@ class BirdImage extends SrcImage {
     // bird positioning
     if (state.current === state.ready) {
       // y is backup, (RESET)
-      this.y = this.birdPosY
+      this.y = this.birdYPos
       this.rotation = 0
     } else {
       this.position += this.gravity
@@ -98,18 +128,13 @@ class BirdImage extends SrcImage {
   }
 }
 
-const birdAnimation = [
-  {sX: 276, sY: 112},
-  {sX: 276, sY: 139},
-  {sX: 276, sY: 164},
-  {sX: 276, sY: 139},
-]
-
 const bird = new BirdImage(sprite, birdAnimation, 34, 26, 50, 150)
 const bg = new GameImage(sprite, 0, 0, 275, 226, 0, cvs.height - 226)
 const floor = new GameImage(sprite, 276, 0, 224, 112, 0, cvs.height - 112)
 const getReady = new GameImage(sprite, 0, 228, 173, 152, cvs.width/2 - 173/2, 80)
 const gameOver = new GameImage(sprite, 175, 228, 225, 202, cvs.width/2 - 225/2, 90)
+const northPipe = new PipeImage(sprite, 553, 0, 53, 400, 200, -150)
+const southPipe = new PipeImage(sprite, 502, 0, 53, 400, 200, 350)
 
 // -- GAME CONTROL
 const state = {
@@ -141,6 +166,8 @@ function draw() {
   ctx.fillStyle = '#70c5ce'
   ctx.fillRect(0, 0, cvs.width, cvs.height)
   bg.drawTwice()
+  northPipe.draw()
+  southPipe.draw()
   floor.drawTwice()
   // bird is drawn last to get higher z-index
   bird.draw()
