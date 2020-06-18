@@ -85,13 +85,13 @@ class GameImage extends SrcImage {
 }
 
 class PipePair {
-  constructor(src, northPipe, southPipe, w, h, gap = 90, maxYPos = -170) {
+  constructor(src, northPipe, southPipe, w, h, gap = 110, maxYPos = -170) {
     this.src = src
     this.northPipe = northPipe
     this.southPipe = southPipe
     this.w = w
     this.h = h
-    this.gap = gap // 230 - 90
+    this.gap = gap
     this.maxYPos = maxYPos
     this.position = []
   }
@@ -99,7 +99,7 @@ class PipePair {
     for (const i in this.position) {
       const p = this.position[i]
       const topYPos = p.y
-      const bottomYPos = p.y + this.h + this.gap
+      const bottomYPos = p.y + this.h + p.gap
       ctx.drawImage(this.src, this.northPipe.sX, this.northPipe.sY, this.w, this.h, p.x, topYPos, this.w, this.h)
       ctx.drawImage(this.src, this.southPipe.sX, this.southPipe.sY, this.w, this.h, p.x, bottomYPos, this.w, this.h)
     }
@@ -107,15 +107,17 @@ class PipePair {
   update() {
     if (state.current !== state.inGame) return
     if ((frames % 100) === 0) {
-      // add new pipe postion which comes from the right
+      // adds new pipe to postion array which comes from the right
+      // and its random gaps
       this.position = this.position.concat({
         x: cvs.width,
         y: this.maxYPos * (Math.random() + 1),
+        gap: this.gap * (Math.random() + 1)
       })
     }
     for (const i in this.position) {
       const p = this.position[i]
-      const bottomYPos = p.y + this.h + this.gap
+      const bottomYPos = p.y + this.h + p.gap
       // move pipe left
       p.x -= 2
       // remove pipe from positions array and manage the score
