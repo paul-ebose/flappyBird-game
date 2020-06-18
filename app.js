@@ -27,8 +27,8 @@ const score = {
       // show top middle
       ctx.font = '35px Teko'
       ctx.lineWidth = 2
-      ctx.fillText(this.value, cvs.width/2, 50)
-      ctx.strokeText(this.value, cvs.width/2, 50)
+      ctx.fillText(this.value, cvs.width/2 - 10, 50)
+      ctx.strokeText(this.value, cvs.width/2 - 10, 50)
     }
     else if (state.current === state.over) {
       ctx.font = '25px Teko'
