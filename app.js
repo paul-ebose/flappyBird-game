@@ -8,7 +8,8 @@ let frames = 0
 const deg = 45 * (Math.PI/180)
 const sprite = new Image()
 sprite.src = './images/sprite.png'
-
+const northPipe = { sX: 553,sY: 0 }
+const southPipe = { sX: 502,sY: 0 }
 const birdAnimation = [
   {sX: 276, sY: 112},
   {sX: 276, sY: 139},
@@ -48,33 +49,42 @@ class GameImage extends SrcImage {
   }
 }
 
-class PipeImage extends GameImage {
-  constructor(src, sX, sY, w, h, x, y, isBottomPipe = false) {
-    super(src,sX,sY,w,h,x,y)
-    this.isBottomPipe = isBottomPipe
-    this.gap = 90
-    this.maxYPos = -150
+class PipePair {
+  constructor(src, northPipe, southPipe, w, h, gap = 90, maxYPos = -320) {
+    this.src = src
+    this.northPipe = northPipe
+    this.southPipe = southPipe
+    this.w = w
+    this.h = h
+    this.gap = gap // 230 - 90
+    this.maxYPos = maxYPos
     this.position = []
   }
   draw() {
     for (const i in this.position) {
       const p = this.position[i]
-      const posY = this.isBottomPipe ? p.y + this.h + this.gap : p.y
-      ctx.drawImage(this.src, this.sX, this.sY, this.w, this.h, p.x, posY, this.w, this.h)
+      const topYPos = p.y
+      const bottomYPos = p.y + this.h + this.gap
+      ctx.drawImage(this.src, this.northPipe.sX, this.northPipe.sY, this.w, this.h, p.x, topYPos, this.w, this.h)
+      ctx.drawImage(this.src, this.southPipe.sX, this.southPipe.sY, this.w, this.h, p.x, bottomYPos, this.w, this.h)
     }
   }
   update() {
     if (state.current !== state.inGame) return
     if ((frames % 100) === 0) {
       // add new pipe postion which comes from the right
-      this.position = this.position.concat({ x: cvs.width, y: this.maxYPos * (Math.random() + 1) })
+      let randomYPos = Math.floor(this.maxYPos * Math.random())
+      this.position = this.position.concat({
+        x: cvs.width,
+        y: randomYPos > -120 ? -120 : randomYPos,
+      })
     }
     for (const i in this.position) {
       const p = this.position[i]
       // move pipe left
       p.x -= 2
       // remove pipe from positions array
-      if (this.position.length >= 4) {
+      if (p.x + this.w <= 0) {
         this.position.shift()
       }
     }
@@ -143,8 +153,7 @@ const bg = new GameImage(sprite, 0, 0, 275, 226, 0, cvs.height - 226)
 const floor = new GameImage(sprite, 276, 0, 224, 112, 0, cvs.height - 112)
 const getReady = new GameImage(sprite, 0, 228, 173, 152, cvs.width/2 - 173/2, 80)
 const gameOver = new GameImage(sprite, 175, 228, 225, 202, cvs.width/2 - 225/2, 90)
-const northPipe = new PipeImage(sprite, 553, 0, 53, 400, 200, -150)
-const southPipe = new PipeImage(sprite, 502, 0, 53, 400, 200, 350, true)
+const pipes = new PipePair(sprite, northPipe, southPipe, 53, 400)
 
 // -- GAME CONTROL
 const state = {
@@ -176,8 +185,7 @@ function draw() {
   ctx.fillStyle = '#70c5ce'
   ctx.fillRect(0, 0, cvs.width, cvs.height)
   bg.drawTwice()
-  northPipe.draw()
-  southPipe.draw()
+  pipes.draw()
   floor.drawTwice()
   // bird is drawn last to get higher z-index
   bird.draw()
@@ -190,8 +198,7 @@ function draw() {
 function update() {
   bird.update()
   floor.update()
-  northPipe.update()
-  southPipe.update()
+  pipes.update()
 }
 
 // loop
