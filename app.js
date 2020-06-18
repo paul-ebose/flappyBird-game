@@ -50,7 +50,7 @@ class GameImage extends SrcImage {
 }
 
 class PipePair {
-  constructor(src, northPipe, southPipe, w, h, gap = 90, maxYPos = -320) {
+  constructor(src, northPipe, southPipe, w, h, gap = 90, maxYPos = -170) {
     this.src = src
     this.northPipe = northPipe
     this.southPipe = southPipe
@@ -73,10 +73,9 @@ class PipePair {
     if (state.current !== state.inGame) return
     if ((frames % 100) === 0) {
       // add new pipe postion which comes from the right
-      let randomYPos = Math.floor(this.maxYPos * Math.random())
       this.position = this.position.concat({
         x: cvs.width,
-        y: randomYPos > -120 ? -120 : randomYPos,
+        y: this.maxYPos * (Math.random() + 1),
       })
     }
     for (const i in this.position) {
