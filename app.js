@@ -39,7 +39,10 @@ const score = {
       ctx.fillText(this.best, 225, 228)
       ctx.strokeText(this.best, 225, 228)
     }
-  }
+  },
+  reset() {
+    this.value = 0
+  },
 }
 
 // -- LOAD IMAGES
@@ -130,6 +133,9 @@ class PipePair {
       }
     }
   }
+  reset() {
+    this.position = []
+  }
 }
 
 class Bird extends SrcImage {
@@ -161,7 +167,7 @@ class Bird extends SrcImage {
   update() {
     // bird speed
     let period = state.current === state.ready ? 10 : 5
-    // change bird wing/flap angle on the draw function
+    // change bird wing-flap angle on the draw function
     this.frame += frames % period === 0 ? 1 : 0
     // make sure the max frame is 4, then goes back to 0
     this.frame = this.frame % this.animation.length
@@ -188,6 +194,9 @@ class Bird extends SrcImage {
       }
     }
   }
+  resetPosition() {
+    this.position = 0
+  }
 }
 
 const bird = new Bird(sprite, birdAnimation, 34, 26, 50, 150, 12)
@@ -204,8 +213,30 @@ const state = {
   inGame: 1,
   over:2,
 }
+const startBtn = {
+  x: 120,
+  y: 263,
+  w: 83,
+  h: 29,
+}
 
-function switchState() {
+function restartGame(e) {
+  // gets the canvas, this is done incase the user scrolls
+  const canvasRect = cvs.getBoundingClientRect()
+  // remove extra pixels if any
+  // remember(0,0) is canvas default rect
+  const clickX = e.clientX - canvasRect.left
+  const clickY = e.clientY - canvasRect.top
+  // make sure user clicks only start-game to restart
+  if (clickX >= startBtn.x && clickX <= (startBtn.x + startBtn.w) && clickY >= startBtn.y && clickY <= (startBtn.y + startBtn.h)) {
+    bird.resetPosition()
+    pipes.reset()
+    score.reset()
+    state.current = state.ready
+  }
+}
+
+function switchState(e) {
   switch (state.current) {
     case state.ready:
       state.current = state.inGame
@@ -214,7 +245,7 @@ function switchState() {
       bird.flap()
       break
     case state.over:
-      state.current = state.ready
+      restartGame(e)
       break
     default:
       break
