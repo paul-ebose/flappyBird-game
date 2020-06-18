@@ -224,6 +224,10 @@ const floor = new GameImage(sprite, 276, 0, 224, 112, 0, cvs.height - 112)
 const getReady = new GameImage(sprite, 0, 228, 173, 152, cvs.width/2 - 173/2, 80)
 const gameOver = new GameImage(sprite, 175, 228, 225, 202, cvs.width/2 - 225/2, 90)
 const pipes = new PipePair(sprite, northPipe, southPipe, 53, 400)
+const platinumMedal = new GameImage(sprite, 310, 112, 46, 45, 72, 176, 46, 45)
+const goldMedal = new GameImage(sprite, 310, 158, 46, 45, 72, 176, 46, 45)
+const silverMedal = new GameImage(sprite, 360, 112, 46, 45, 72, 176, 46, 45)
+const bronzeMedal = new GameImage(sprite, 360, 158, 46, 45, 72, 176, 46, 45)
 
 // -- GAME CONTROL
 const state = {
@@ -295,6 +299,10 @@ function draw() {
   state.current === state.ready ? getReady.draw() : null
   state.current === state.over ? gameOver.draw() : null
   score.draw()
+  if (state.current === state.over && (score.value >= 0 && score.value <= 3)) bronzeMedal.draw()
+  if (state.current === state.over && (score.value >= 4 && score.value <= 8)) silverMedal.draw()
+  if (state.current === state.over && (score.value >= 9 && score.value <= 15)) goldMedal.draw()
+  if (state.current === state.over && score.value >= 16) platinumMedal.draw()
 }
 
 // update
