@@ -141,7 +141,7 @@ class PipePair {
       if (birdMouth > p.x && birdWings < (p.x + this.w) && birdScalp < (bottomYPos + this.h) && birdChest > bottomYPos ) {
         hit.play()
         state.current = state.over
-        setTimeout(() => die.play(), 800)
+        setTimeout(() => die.play(), 400)
       }
     }
   }
@@ -203,6 +203,13 @@ class Bird extends SrcImage {
         this.y >= 355 ? this.rotation = 0 : this.rotation = 0.5 * deg
       } else {
         this.rotation = 7.7 * deg
+      }
+      // kill bird when game over
+      if (state.current === state.over) {
+        // faces down
+        this.rotation = 90 * deg
+        // stops flapping
+        this.frame = 1
       }
     }
   }
