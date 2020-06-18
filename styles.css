@@ -20,7 +20,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #ededed;
+  background-color: #2e2f3e;
+  color: #ededed;
   -webkit-user-select: none;
   -ms-user-select: none;
   -moz-user-select: none;
@@ -30,7 +31,7 @@ body {
 canvas {
   display: flex;
   margin: auto;
-  border: 1px solid #222;
+  box-shadow: 0 0 25px 5px #222;
 }
 
 header {
@@ -44,12 +45,8 @@ header p {
   margin: 0.5rem auto;
 }
 
-header a {
-  color: orange;
-}
-
 main {
-  background-color: #fbfbfb;
+  background-color: #343446;
   padding: 1rem 0 3rem 0;
 }
 
@@ -90,9 +87,8 @@ article {
   text-align: justify;
 }
 
-article h3,
-article a {
-  color: #db8b13;
+h3, a {
+  color: #ff7400;
 }
 
 footer {
