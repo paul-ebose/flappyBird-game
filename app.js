@@ -15,16 +15,6 @@ const birdAnimation = [
   {sX: 276, sY: 164},
   {sX: 276, sY: 139},
 ]
-const pipes = {
-  top: {
-    sX: 553,
-    sY: 0,
-  },
-  bottom: {
-    sX: 502,
-    sY: 0,
-  },
-}
 
 // -- LOAD IMAGES
 class SrcImage {
@@ -59,20 +49,33 @@ class GameImage extends SrcImage {
 }
 
 class PipeImage extends GameImage {
-  constructor(src, sX, sY, w, h, x, y) {
+  constructor(src, sX, sY, w, h, x, y, isBottomPipe = false) {
     super(src,sX,sY,w,h,x,y)
+    this.isBottomPipe = isBottomPipe
     this.gap = 90
     this.maxYPos = -150
     this.position = []
   }
   draw() {
-    ctx.drawImage(this.src, this.sX, this.sY, this.w, this.h, this.x, this.y, this.w, this.h)
+    for (const i in this.position) {
+      const p = this.position[i]
+      const posY = this.isBottomPipe ? p.y + this.h + this.gap : p.y
+      ctx.drawImage(this.src, this.sX, this.sY, this.w, this.h, p.x, posY, this.w, this.h)
+    }
   }
-  update() {}
+  update() {
+    if (state.current !== state.inGame) return
+    if ((frames % 100) === 0) {
+      this.position = this.position.concat({ x: cvs.width, y: this.maxYPos * (Math.random() + 1) })
+    }
+    for (const i in this.position) {
+      this.position[i].x -= 2
+    }
+  }
 }
 
 class BirdImage extends SrcImage {
-  constructor(src, animation, w, h, x, y, gravity = 0.25, jump = 4.6) {
+  constructor(src, animation, w, h, x, y, gravity = 0.14, jump = 3) {
     super(src, w, h, x, y)
     this.birdYPos = y
     this.animation = animation
@@ -134,7 +137,7 @@ const floor = new GameImage(sprite, 276, 0, 224, 112, 0, cvs.height - 112)
 const getReady = new GameImage(sprite, 0, 228, 173, 152, cvs.width/2 - 173/2, 80)
 const gameOver = new GameImage(sprite, 175, 228, 225, 202, cvs.width/2 - 225/2, 90)
 const northPipe = new PipeImage(sprite, 553, 0, 53, 400, 200, -150)
-const southPipe = new PipeImage(sprite, 502, 0, 53, 400, 200, 350)
+const southPipe = new PipeImage(sprite, 502, 0, 53, 400, 200, 350, true)
 
 // -- GAME CONTROL
 const state = {
@@ -180,6 +183,8 @@ function draw() {
 function update() {
   bird.update()
   floor.update()
+  northPipe.update()
+  southPipe.update()
 }
 
 // loop
@@ -192,4 +197,3 @@ function loop() {
 
 // -- START
 loop()
-// game should start like 1500ms after tapping play
