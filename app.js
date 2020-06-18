@@ -90,7 +90,7 @@ class PipePair {
   }
 }
 
-class BirdImage extends SrcImage {
+class Bird extends SrcImage {
   constructor(src, animation, w, h, x, y, gravity = 0.14, jump = 3) {
     super(src, w, h, x, y)
     this.birdYPos = y
@@ -147,7 +147,7 @@ class BirdImage extends SrcImage {
   }
 }
 
-const bird = new BirdImage(sprite, birdAnimation, 34, 26, 50, 150)
+const bird = new Bird(sprite, birdAnimation, 34, 26, 50, 150)
 const bg = new GameImage(sprite, 0, 0, 275, 226, 0, cvs.height - 226)
 const floor = new GameImage(sprite, 276, 0, 224, 112, 0, cvs.height - 112)
 const getReady = new GameImage(sprite, 0, 228, 173, 152, cvs.width/2 - 173/2, 80)
