@@ -11,40 +11,40 @@ sprite.src = './images/sprite.png'
 
 // -- LOAD IMAGES
 class SrcImage {
-  constructor(src, w, h, dX, dY) {
+  constructor(src, w, h, x, y) {
     this.src = src
     this.w = w
     this.h = h
-    this.dX = dX
-    this.dY = dY
+    this.x = x
+    this.y = y
   }
 }
 
 class GameImage extends SrcImage {
-  constructor(src, sX, sY, w, h, dX, dY) {
-    super(src,w,h,dX,dY)
+  constructor(src, sX, sY, w, h, x, y) {
+    super(src,w,h,x,y)
     this.sX = sX
     this.sY = sY
-    this.floorPosX = 2
+    this.PosX = 2
   }
   draw() {
-    ctx.drawImage(this.src, this.sX, this.sY, this.w, this.h, this.dX, this.dY, this.w, this.h)
+    ctx.drawImage(this.src, this.sX, this.sY, this.w, this.h, this.x, this.y, this.w, this.h)
   }
   drawTwice() {
-    ctx.drawImage(this.src, this.sX, this.sY, this.w, this.h, this.dX, this.dY, this.w, this.h)
-    ctx.drawImage(this.src, this.sX, this.sY, this.w, this.h, this.dX + this.w, this.dY, this.w, this.h)
+    ctx.drawImage(this.src, this.sX, this.sY, this.w, this.h, this.x, this.y, this.w, this.h)
+    ctx.drawImage(this.src, this.sX, this.sY, this.w, this.h, this.x + this.w, this.y, this.w, this.h)
   }
   update() {
     if (state.current === state.inGame) {
-      this.dX = (this.dX - this.floorPosX) % (this.w/2)
+      this.x = (this.x - this.PosX) % (this.w/2)
     }
   }
 }
 
 class BirdImage extends SrcImage {
-  constructor(src, animation, w, h, dX, dY, gravity = 0.25, jump = 4.6) {
-    super(src, w, h, dX, dY)
-    this.birdPosY = dY
+  constructor(src, animation, w, h, x, y, gravity = 0.25, jump = 4.6) {
+    super(src, w, h, x, y)
+    this.birdPosY = y
     this.animation = animation
     this.frame = 0
     this.position = 0
@@ -56,7 +56,7 @@ class BirdImage extends SrcImage {
     let bird = this.animation[this.frame]
     ctx.save()
     // move canvas pointer from (0,0) to bird location
-    ctx.translate(this.dX, this.dY)
+    ctx.translate(this.x, this.y)
     // rotate the canvas
     ctx.rotate(this.rotation)
     // draw image but repositoned it to fix ctx.translate
@@ -77,20 +77,20 @@ class BirdImage extends SrcImage {
     // bird positioning
     if (state.current === state.ready) {
       // y is backup, (RESET)
-      this.dY = this.birdPosY
+      this.y = this.birdPosY
       this.rotation = 0
     } else {
       this.position += this.gravity
       // gravity pulling down or flap pushing up
-      this.dY += this.position
+      this.y += this.position
       // activate floor / make it solid for the bird
-      if ((this.dY + this.h/2) >= (cvs.height - floor.h)) {
-        this.dY = (cvs.height - floor.h) - this.h/2
+      if ((this.y + this.h/2) >= (cvs.height - floor.h)) {
+        this.y = (cvs.height - floor.h) - this.h/2
       }
       // angles of bird when flying
       if (this.position >= this.jump) {
         // falling down (true-:still falling, false-:touches the floor)
-        this.dY >= 355 ? this.rotation = 0 : this.rotation = 0.5 * deg
+        this.y >= 355 ? this.rotation = 0 : this.rotation = 0.5 * deg
       } else {
         this.rotation = 7.7 * deg
       }
