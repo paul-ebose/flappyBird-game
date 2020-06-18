@@ -80,21 +80,36 @@ class PipePair {
     }
     for (const i in this.position) {
       const p = this.position[i]
+      const bottomYPos = p.y + this.h + this.gap
       // move pipe left
       p.x -= 2
       // remove pipe from positions array
       if (p.x + this.w <= 0) {
         this.position.shift()
       }
+      // detect collisions
+      const birdMouth = bird.x + bird.r
+      const birdScalp = bird.y - bird.r
+      const birdChest = bird.y + bird.r
+      const birdWings = bird.x - bird.r
+      // north pipe
+      if (birdMouth > p.x && birdWings < (p.x + this.w) && birdScalp < (p.y + this.h) && birdChest > p.y ) {
+        state.current = state.over
+      }
+      // south pipe
+      if (birdMouth > p.x && birdWings < (p.x + this.w) && birdScalp < (bottomYPos + this.h) && birdChest > bottomYPos ) {
+        state.current = state.over
+      }
     }
   }
 }
 
 class Bird extends SrcImage {
-  constructor(src, animation, w, h, x, y, gravity = 0.14, jump = 3) {
+  constructor(src, animation, w, h, x, y, r, gravity = 0.14, jump = 3) {
     super(src, w, h, x, y)
-    this.birdYPos = y
     this.animation = animation
+    this.r = r
+    this.birdYPos = y
     this.frame = 0
     this.position = 0
     this.rotation = 0 * deg
@@ -147,7 +162,7 @@ class Bird extends SrcImage {
   }
 }
 
-const bird = new Bird(sprite, birdAnimation, 34, 26, 50, 150)
+const bird = new Bird(sprite, birdAnimation, 34, 26, 50, 150, 12)
 const bg = new GameImage(sprite, 0, 0, 275, 226, 0, cvs.height - 226)
 const floor = new GameImage(sprite, 276, 0, 224, 112, 0, cvs.height - 112)
 const getReady = new GameImage(sprite, 0, 228, 173, 152, cvs.width/2 - 173/2, 80)
@@ -184,10 +199,10 @@ function draw() {
   ctx.fillStyle = '#70c5ce'
   ctx.fillRect(0, 0, cvs.width, cvs.height)
   bg.drawTwice()
+  // bird is drawn here to make it fall into the pipe
+  bird.draw()
   pipes.draw()
   floor.drawTwice()
-  // bird is drawn last to get higher z-index
-  bird.draw()
   // draw these only if necessary
   state.current === state.ready ? getReady.draw() : null
   state.current === state.over ? gameOver.draw() : null
