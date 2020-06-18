@@ -26,12 +26,16 @@ body {
   -ms-user-select: none;
   -moz-user-select: none;
   user-select: none;
+  line-height: 28px;
+  letter-spacing: 3px;
 }
 
 canvas {
   display: flex;
-  margin: auto;
-  box-shadow: 0 0 25px 5px #222;
+  margin: 2rem auto 4rem auto;
+  padding: 1rem 0;
+  border-radius: 5%;
+  box-shadow: 0 0 20px #222;
 }
 
 header {
@@ -47,7 +51,6 @@ header p {
 
 main {
   background-color: #343446;
-  padding: 1rem 0 3rem 0;
 }
 
 .screenshots {
@@ -57,11 +60,18 @@ main {
   overflow-x: scroll;
 }
 
-.container {
+.container,
+.container-fluid {
   display: flex;
-  margin: 1rem auto;
+  margin: auto;
+  padding: 2rem 0;
   overflow-x: scroll;
   width: 90%;
+}
+
+.container-fluid {
+  overflow: hidden;
+  width: 100%;
 }
 
 .screenshots::-webkit-scrollbar {
