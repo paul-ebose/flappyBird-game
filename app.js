@@ -16,6 +16,31 @@ const birdAnimation = [
   {sX: 276, sY: 164},
   {sX: 276, sY: 139},
 ]
+const score = {
+  best: parseInt(localStorage.getItem('best')) || 0,
+  value: 0,
+  draw() {
+    ctx.fillStyle = '#fff'
+    ctx.strokeStyle = '#222'
+    // decide where to show score
+    if (state.current === state.inGame) {
+      // show top middle
+      ctx.font = '35px Teko'
+      ctx.lineWidth = 2
+      ctx.fillText(this.value, cvs.width/2, 50)
+      ctx.strokeText(this.value, cvs.width/2, 50)
+    }
+    else if (state.current === state.over) {
+      ctx.font = '25px Teko'
+      ctx.lineWidth = 1
+      ctx.fillText(this.value, 225, 186)
+      ctx.strokeText(this.value, 225, 186)
+      // show best score
+      ctx.fillText(this.best, 225, 228)
+      ctx.strokeText(this.best, 225, 228)
+    }
+  }
+}
 
 // -- LOAD IMAGES
 class SrcImage {
@@ -83,9 +108,12 @@ class PipePair {
       const bottomYPos = p.y + this.h + this.gap
       // move pipe left
       p.x -= 2
-      // remove pipe from positions array
+      // remove pipe from positions array and manage the score
       if (p.x + this.w <= 0) {
         this.position.shift()
+        score.value++
+        score.best = Math.max(score.value, score.best)
+        localStorage.setItem('best', score.best)
       }
       // detect collisions
       const birdMouth = bird.x + bird.r
@@ -206,6 +234,7 @@ function draw() {
   // draw these only if necessary
   state.current === state.ready ? getReady.draw() : null
   state.current === state.over ? gameOver.draw() : null
+  score.draw()
 }
 
 // update
