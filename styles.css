@@ -30,12 +30,22 @@ body {
   letter-spacing: 3px;
 }
 
+article {
+  width: 95%;
+  margin: 1rem auto;
+  text-align: justify;
+}
+
 canvas {
   display: flex;
   margin: 2rem auto 4rem auto;
   padding: 1rem 0;
   border-radius: 5%;
   box-shadow: 0 0 20px #222;
+}
+
+h3, a {
+  color: #ff7400;
 }
 
 header {
@@ -51,54 +61,6 @@ header p {
 
 main {
   background-color: #343446;
-}
-
-.screenshots {
-  display: flex;
-  width: fit-content;
-  margin: 1rem auto;
-  overflow-x: scroll;
-}
-
-.container,
-.container-fluid {
-  display: flex;
-  margin: auto;
-  padding: 2rem 0;
-  overflow-x: scroll;
-  width: 90%;
-}
-
-.container-fluid {
-  overflow: hidden;
-  width: 100%;
-}
-
-.screenshots::-webkit-scrollbar {
-  display: none;
-  width: 0.5rem;
-}
-
-.container::-webkit-scrollbar {
-  display: none;
-  width: 0.5rem;
-}
-
-.screenshots img{
-  width: 200px;
-  height: 300px;
-  object-fit: cover;
-  margin-right: 2rem;
-}
-
-article {
-  width: 95%;
-  margin: 1rem auto;
-  text-align: justify;
-}
-
-h3, a {
-  color: #ff7400;
 }
 
 footer {
@@ -117,4 +79,42 @@ footer p {
 footer p i {
   font-size: 11px;
   color: #925d0e;
+}
+
+.container,
+.container-fluid {
+  display: flex;
+  margin: auto;
+  padding: 2rem 0;
+  overflow-x: scroll;
+  width: 90%;
+}
+
+.container::-webkit-scrollbar {
+  display: none;
+  width: 0.5rem;
+}
+
+.container-fluid {
+  overflow: hidden;
+  width: 100%;
+}
+
+.screenshots {
+  display: flex;
+  width: fit-content;
+  margin: 1rem auto;
+  overflow-x: scroll;
+}
+
+.screenshots::-webkit-scrollbar {
+  display: none;
+  width: 0.5rem;
+}
+
+.screenshots img{
+  width: 200px;
+  height: 300px;
+  object-fit: cover;
+  margin-right: 2rem;
 }
