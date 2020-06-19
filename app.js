@@ -301,10 +301,10 @@ function draw() {
   state.current === state.ready ? getReady.draw() : null
   state.current === state.over ? gameOver.draw() : null
   score.draw()
-  if (state.current === state.over && (score.value >= 0 && score.value <= 7)) bronzeMedal.draw()
-  if (state.current === state.over && (score.value >= 8 && score.value <= 18)) silverMedal.draw()
-  if (state.current === state.over && (score.value >= 19 && score.value <= 30)) goldMedal.draw()
-  if (state.current === state.over && score.value >= 32) platinumMedal.draw()
+  if (state.current === state.over && (score.value >= 0 && score.value <= 9)) bronzeMedal.draw()
+  if (state.current === state.over && (score.value >= 10 && score.value <= 22)) silverMedal.draw()
+  if (state.current === state.over && (score.value >= 23 && score.value <= 44)) goldMedal.draw()
+  if (state.current === state.over && score.value >= 45) platinumMedal.draw()
 }
 
 // update
