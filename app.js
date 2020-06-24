@@ -1,144 +1,10 @@
-class SourceImage {
-  constructor(src, w, h, x, y) {
-    this.src = src
-    this.w = w
-    this.h = h
-    this.x = x
-    this.y = y
-  }
-}
+import BirdImage from './modules/BirdImage.js'
+import GameImage from './modules/GameImage.js'
+import PipePairImage from './modules/PipePairImage.js'
 
-class GameImage extends SourceImage {
-  constructor(src, sX, sY, w, h, x, y) {
-    super(src,w,h,x,y)
-    this.sX = sX
-    this.sY = sY
-    this.PosX = 2
-  }
-  draw() {
-    ctx.drawImage(this.src, this.sX, this.sY, this.w, this.h, this.x, this.y, this.w, this.h)
-  }
-  drawTwice() {
-    ctx.drawImage(this.src, this.sX, this.sY, this.w, this.h, this.x, this.y, this.w, this.h)
-    ctx.drawImage(this.src, this.sX, this.sY, this.w, this.h, this.x + this.w, this.y, this.w, this.h)
-  }
-  update() {
-    if (state.current === state.inGame) this.x = (this.x - this.PosX) % (this.w/2)
-  }
-}
-
-class PipePairImage extends SourceImage {
-  constructor(src, northPipe, southPipe, w, h, gap = 110, maxYPosition = -170) {
-    super(src, w, h)
-    this.northPipe = northPipe
-    this.southPipe = southPipe
-    this.gap = gap
-    this.maxYPosition = maxYPosition
-    this.pipePositions = []
-  }
-  draw() {
-    for (const i in this.pipePositions) {
-      const currentPosition = this.pipePositions[i]
-      const topYPosition = currentPosition.y
-      const bottomYPosition = currentPosition.y + this.h + currentPosition.gap
-      ctx.drawImage(this.src, this.northPipe.sX, this.northPipe.sY, this.w, this.h, currentPosition.x, topYPosition, this.w, this.h)
-      ctx.drawImage(this.src, this.southPipe.sX, this.southPipe.sY, this.w, this.h, currentPosition.x, bottomYPosition, this.w, this.h)
-    }
-  }
-  update() {
-    if (state.current !== state.inGame) return
-    if ((frames % 100) === 0) {
-      this.pipePositions = this.pipePositions.concat({
-        x: cvs.width,
-        y: this.maxYPosition * (Math.random() + 1),
-        gap: this.gap * (Math.random() + 1),
-      })
-    }
-    for (const i in this.pipePositions) {
-      const currentPosition = this.pipePositions[i]
-      const topYPosition = currentPosition.y
-      const bottomYPosition = currentPosition.y + this.h + currentPosition.gap
-      currentPosition.x -= 2
-      if (currentPosition.x + this.w <= 0) {
-        this.pipePositions.shift()
-        score.value++
-        point.play()
-        score.best = Math.max(score.value, score.best)
-        localStorage.setItem('best', score.best)
-      }
-      const birdLips = bird.x + bird.r
-      const birdScalp = bird.y - bird.r
-      const birdChest = bird.y + bird.r
-      const birdWings = bird.x - bird.r
-      if (birdLips > currentPosition.x && birdWings < (currentPosition.x + this.w) && birdScalp < (topYPosition + this.h) && birdChest > topYPosition ) {
-        hit.play()
-        state.current = state.over
-        setTimeout(() => die.play(), 800)
-      }
-      if (birdLips > currentPosition.x && birdWings < (currentPosition.x + this.w) && birdScalp < (bottomYPosition + this.h) && birdChest > bottomYPosition ) {
-        hit.play()
-        state.current = state.over
-        setTimeout(() => die.play(), 400)
-      }
-    }
-  }
-  reset() {
-    this.pipePositions = []
-  }
-}
-
-class BirdImage extends SourceImage {
-  constructor(src, animation, w, h, x, y, r, gravity = 0.14, jump = 3) {
-    super(src, w, h, x, y)
-    this.animation = animation
-    this.r = r
-    this.birdYPos = y
-    this.frame = 0
-    this.birdYPosition = 0
-    this.rotation = 0 * DEGREE
-    this.gravity = gravity
-    this.jump = jump
-  }
-  draw() {
-    const bird = this.animation[this.frame]
-    ctx.save()
-    ctx.translate(this.x, this.y)
-    ctx.rotate(this.rotation)
-    ctx.drawImage(this.src, bird.sX, bird.sY, this.w, this.h, -this.w/2, -this.h/2, this.w, this.h)
-    ctx.restore()
-  }
-  flap() {
-    this.birdYPosition = -this.jump
-  }
-  update() {
-    const wingSpeed = state.current === state.ready ? 10 : 5
-    this.frame += frames % wingSpeed === 0 ? 1 : 0
-    this.frame = this.frame % this.animation.length
-
-    if (state.current === state.ready || state.current === state.intro) {
-      this.y = this.birdYPos
-      this.rotation = 0
-    } else {
-      this.birdYPosition += this.gravity
-      this.y += this.birdYPosition
-
-      if ((this.y + this.h/2) >= (cvs.height - floor.h))
-        this.y = (cvs.height - floor.h) - this.h/2
-
-      if (this.birdYPosition >= this.jump)
-        this.y >= 355 ? this.rotation = 0 : this.rotation = 0.5 * DEGREE
-      else this.rotation = 7.7 * DEGREE
-
-      if (state.current === state.over) {
-        this.rotation = 90 * DEGREE
-        this.frame = 1
-      }
-    }
-  }
-  resetPosition() {
-    this.birdYPosition = 0
-  }
-}
+const cvs = document.getElementById('game')
+const ctx = cvs.getContext('2d')
+cvs.addEventListener('click', handleClick)
 
 const score = {
   best: parseInt(localStorage.getItem('best')) || 0,
@@ -151,8 +17,7 @@ const score = {
       ctx.lineWidth = 2
       ctx.fillText(this.value, cvs.width/2 - 10, 50)
       ctx.strokeText(this.value, cvs.width/2 - 10, 50)
-    }
-    else if (state.current === state.over) {
+    } else if (state.current === state.over) {
       ctx.font = '25px Teko'
       ctx.lineWidth = 1
       ctx.fillText(this.value, 225, 186)
@@ -166,18 +31,7 @@ const score = {
   },
 }
 
-/**
- * ------------------------------------------
- *         REAL CODE STARTS HERE
- * ------------------------------------------
- */
-
-const cvs = document.getElementById('game')
-const ctx = cvs.getContext('2d')
-cvs.addEventListener('click', handleClick)
-
 let frames = 0
-const DEGREE = 45 * (Math.PI/180)
 const sprite = new Image()
 sprite.src = './images/sprite.png'
 
@@ -206,10 +60,7 @@ const startBtn = {
   h: 29,
 }
 
-const die = new Audio('./audio/sfx_die.wav')
 const flap = new Audio('./audio/sfx_flap.wav')
-const hit = new Audio('./audio/sfx_hit.wav')
-const point = new Audio('./audio/sfx_point.wav')
 const swooshing = new Audio('./audio/sfx_swooshing.wav')
 
 const pipes = new PipePairImage(sprite, northPipe, southPipe, 53, 400)
@@ -261,23 +112,23 @@ function restartGame(e) {
 function draw() {
   ctx.fillStyle = '#70c5ce'
   ctx.fillRect(0, 0, cvs.width, cvs.height)
-  bg.drawTwice()
-  bird.draw()
-  pipes.draw()
-  floor.drawTwice()
-  state.current === state.ready ? getReady.draw() : null
-  state.current === state.over ? gameOver.draw() : null
-  score.draw()
-  if (state.current === state.over && (score.value >= 0 && score.value <= 9)) bronzeMedal.draw()
-  if (state.current === state.over && (score.value >= 10 && score.value <= 22)) silverMedal.draw()
-  if (state.current === state.over && (score.value >= 23 && score.value <= 44)) goldMedal.draw()
-  if (state.current === state.over && score.value >= 45) platinumMedal.draw()
+  bg.drawTwice(ctx)
+  bird.draw(ctx)
+  pipes.draw(ctx)
+  floor.drawTwice(ctx)
+  state.current === state.ready ? getReady.draw(ctx) : null
+  state.current === state.over ? gameOver.draw(ctx) : null
+  score.draw(ctx)
+  if (state.current === state.over && (score.value >= 0 && score.value <= 9)) bronzeMedal.draw(ctx)
+  if (state.current === state.over && (score.value >= 10 && score.value <= 22)) silverMedal.draw(ctx)
+  if (state.current === state.over && (score.value >= 23 && score.value <= 44)) goldMedal.draw(ctx)
+  if (state.current === state.over && score.value >= 45) platinumMedal.draw(ctx)
 }
 
 function update() {
-  bird.update()
-  floor.update()
-  pipes.update()
+  bird.update(state, cvs, frames, floor)
+  floor.update(state)
+  pipes.update(state, cvs, frames, bird, score)
 }
 
 function loop() {
